@@ -7,8 +7,9 @@ WORKDIR /app
 # 复制package.json和package-lock.json
 COPY frontend/package*.json ./
 
-# 安装依赖
-RUN npm install
+# 配置npm使用中国镜像源并安装依赖
+RUN npm config set registry https://registry.npmmirror.com && \
+    npm install
 
 # 复制所有源代码
 COPY frontend/ .
