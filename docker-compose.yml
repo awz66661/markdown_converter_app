@@ -3,8 +3,8 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    expose:
-      - "5000"
+    ports:
+      - "5000:5000" # 将容器的 5000 端口映射到宿主机的 5000 端口
     restart: unless-stopped
 
   nginx:
