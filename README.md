@@ -1,11 +1,15 @@
 # Markdown Converter App
 
-这是一个将 Markdown 格式文本转换为特定格式的 Web 应用程序。应用程序使用 Vue.js 作为前端，Flask 作为后端，并通过 Docker 进行部署。
+这是一个将 Markdown 格式文本转换为特定格式的 Web 应用程序。该应用专门用于将 AI 生成的 Markdown 内容转换为适合博客系统使用的格式。应用程序使用 Vue.js 作为前端，Flask 作为后端，并通过 Docker 进行部署。
+
+## 应用场景
+
+这个工具专门用于我的博客内容![我的博客](awz66661.top)创作，可以将 AI 生成的 Markdown 文档转换为符合博客系统要求的格式，方便直接粘贴到博客编辑器中。
 
 ## 功能特性
 
 - 拖拽上传 Markdown 文件
-- 实时转换 Markdown 为指定格式
+- 实时转换 Markdown 为博客格式
 - 一键复制转换后的文本
 - 响应式设计，支持移动端
 
@@ -44,6 +48,7 @@ markdown_converter_app/
 ├── .gitignore                # Git 忽略文件
 └── README.md                 # 项目说明文档
 ```
+
 
 ## 本地开发
 
