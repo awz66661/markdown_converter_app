@@ -133,3 +133,8 @@ docker-compose down
 ports:
   - "8080:80"  # 将 8080 替换为你想要的端口
 ```
+
+### 构建前端
+docker run --rm -v $(pwd):/app -w /app docker.1ms.run/node:20-alpine sh -c npm install
+
+docker run --rm -v $(pwd):/app -w /app docker.1ms.run/node:20-alpine sh -c npm run build
