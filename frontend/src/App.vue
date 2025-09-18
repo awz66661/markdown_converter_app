@@ -80,6 +80,143 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: 'App',
+  data() {
+    return {
+      markdownInput: '',
+      convertedOutput: '',
+      errorMessage: '',
+      dragging: false,
+      isConverting: false
+    }
+  },
+  methods: {
+    async convertMarkdown() {
+      if (!this.markdownInput.trim()) {
+        this.convertedOutput = '';
+        return;
+      }
+
+      try {
+        this.isConverting = true;
+        this.errorMessage = '';
+
+        const response = await fetch('/api/convert', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ markdown_text: this.markdownInput }),
+        });
+
+        if (!response.ok) {
+          throw new Error('转换失败');
+        }
+
+        const data = await response.json();
+        this.convertedOutput = data.converted_text;
+      } catch (error) {
+        this.errorMessage = '转换失败，请检查后端服务是否运行正常';
+        console.error('转换错误:', error);
+      } finally {
+        this.isConverting = false;
+      }
+    },
+
+    loadSample() {
+      this.markdownInput = `# 一级标题
+## 二级标题
+### 三级标题
+#### 四级标题
+
+这是一段普通文本，包含**加粗**和*斜体*文字。
+
+**特性列表：**
+- 第一个特性
+- 第二个特性
+- 第三个特性
+
+**步骤说明：**
+1. 第一步操作
+2. 第二步操作
+3. 第三步操作
+
+| 列1 | 列2 | 列3 |
+|-----|-----|-----|
+| 数据1 | 数据2 | 数据3 |
+| 数据4 | 数据5 | 数据6 |`;
+      this.convertMarkdown();
+    },
+
+    clearContent() {
+      this.markdownInput = '';
+      this.convertedOutput = '';
+      this.errorMessage = '';
+    },
+
+    async copyToClipboard() {
+      try {
+        await navigator.clipboard.writeText(this.convertedOutput);
+        alert('已复制到剪贴板！');
+      } catch (err) {
+        this.errorMessage = '复制失败，请手动选择复制';
+      }
+    },
+
+    handleDragEnter(e) {
+      e.preventDefault();
+      this.dragging = true;
+    },
+
+    handleDragLeave(e) {
+      e.preventDefault();
+      this.dragging = false;
+    },
+
+    handleDragOver(e) {
+      e.preventDefault();
+    },
+
+    handleDrop(e) {
+      e.preventDefault();
+      this.dragging = false;
+
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        this.handleFile(files[0]);
+      }
+    },
+
+    handleFileSelect(e) {
+      const files = e.target.files;
+      if (files.length > 0) {
+        this.handleFile(files[0]);
+      }
+    },
+
+    handleFile(file) {
+      if (!file.name.endsWith('.md') && !file.type.includes('markdown')) {
+        this.errorMessage = '请选择 Markdown 文件（.md）';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.markdownInput = e.target.result;
+        this.convertMarkdown();
+        this.errorMessage = '';
+      };
+      reader.onerror = () => {
+        this.errorMessage = '文件读取失败';
+      };
+      reader.readAsText(file);
+    }
+  }
+}
+</script>
+
 <style>
 * {
   margin: 0;
@@ -414,3 +551,4 @@ footer {
     min-height: 250px;
   }
 }
+</style>
